@@ -1,6 +1,9 @@
 addListeners();
 
 function addListeners() {
+
+    let heartBeatingAnimation = null;
+
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
@@ -58,8 +61,17 @@ function addListeners() {
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('heartBeatingBlock');
-            animaster().heartBeating(block);
+            if (!heartBeatingAnimation) {
+                heartBeatingAnimation = animaster().heartBeating(block);
+            }
         });
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            if (heartBeatingAnimation) {
+                heartBeatingAnimation.stop();
+                heartBeatingAnimation = null; 
+            }
+    });
 }
 
 function animaster(){
@@ -113,23 +125,39 @@ function animaster(){
         },
 
         heartBeating: function(element) {
-            if (this.heartBeatTimeout) {
-                clearTimeout(this.heartBeatTimeout);
-            }
+            let isActive = true;
             
             const stepDuration = 500;
             
             const beat = () => {
+                if (!isActive) 
+                    return;
                 this.scale(element, stepDuration, 1.4);
 
                 this.heartBeatTimeout = setTimeout(() => {
+                    if (!isActive) 
+                        return;
                     this.scale(element, stepDuration, 1);
                     
                     this.heartBeatTimeout = setTimeout(beat, stepDuration);
                 }, stepDuration);
+
+                return {
+                    stop(){
+                        
+                    }
+                };
             };
             
             beat();
+
+            return {
+                stop: () => {
+                    isActive = false;
+                    element.style.transform = getTransform(null, 1);
+                    element.style.transitionDuration = '';
+                }
+            };
         },
     }
 
