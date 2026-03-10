@@ -159,6 +159,17 @@ function animaster(){
                 }
             };
         },
+
+        addMove: function(element){
+            this._steps.add();
+            return this;
+        },
+
+        play: function(element){
+            
+        },
+
+        _steps: [],
     }
 
     return animator;
