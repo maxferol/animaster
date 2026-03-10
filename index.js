@@ -7,15 +7,31 @@ function addListeners() {
             animaster().fadeIn(block, 5000);
         });
 
+    document.getElementById('fadeInStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeInBlock');
+            animaster().resetFadeIn(block);
+        });
+
     document.getElementById('fadeOutPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeOutBlock');
             animaster().fadeOut(block, 5000);
         });
+    document.getElementById('fadeOutStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().resetFadeOut(block);
+        });
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
             animaster().move(block, 1000, {x: 100, y: 10});
+        });
+    document.getElementById('moveStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveBlock');
+            animaster().resetMove(block);
         });
 
     document.getElementById('scalePlay')
@@ -28,6 +44,11 @@ function addListeners() {
         .addEventListener('click', function () {
             const block = document.getElementById('moveAndHideBlock');
             animaster().moveAndHide(block, 1000, 0.7, {x: 100, y: 10});
+        });
+    document.getElementById('moveAndHideStop')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().resetMoveAndHide(block);
         });
     document.getElementById('showAndHidePlay')
         .addEventListener('click', function () {
@@ -52,7 +73,7 @@ function animaster(){
             element.classList.remove('hide');
             element.classList.add('show');
         },
-        fadeOut: function(element, duration){
+        fadeOut: function(element, duration) {
             element.style.transitionDuration =  `${duration}ms`;
             element.classList.add('hide');
             element.classList.remove('show');
@@ -61,9 +82,29 @@ function animaster(){
             element.style.transitionDuration =  `${duration}ms`;
             element.style.transform = getTransform(null, ratio);
         },
+        resetFadeIn: function(element) {
+            element.style.transitionDuration = null;
+            //element.style.opacity = 0;
+            element.classList.add('hide');
+            element.classList.remove('show');
+        },
+        resetFadeOut: function(element) {
+            element.style.transitionDuration = null;
+            //element.style.opacity = 1;
+            element.classList.remove('hide');
+            element.classList.add('show');
+        },
+        resetMove: function(element) {
+            element.style.transitionDuration = null;
+            element.style.transform = null;
+        },
         moveAndHide: function(element, duration, ratio, translation) {
             this.move(element, duration * ratio, translation);
             setTimeout(this.fadeOut, duration * ratio, element, duration * (1 - ratio));
+        },
+        resetMoveAndHide: function(element) {
+            this.resetMove(element);
+            this.resetFadeOut(element);
         },
         showAndHide: function(element, duration) {
             let internDuration = duration / 3;
